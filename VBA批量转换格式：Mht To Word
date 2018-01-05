@@ -1,0 +1,57 @@
+Sub HtmlToWord()
+    On Error Resume Next
+    Dim webdoc As Document
+    Dim Fp$, Fn$, Fm$, Mf As Object
+   
+    Fp = ActiveDocument.Path & "\"
+    Fn = Dir(Fp & "*.mht")
+    MkDir Fp & "已转换"
+    MkDir Fp & "原始文件"
+    Set Mf = CreateObject("scripting.filesystemobject")
+    Application.DisplayAlerts = False
+ 
+    Do While Fp & Fn <> Fp & ""
+   
+       Fm = Left(Fn, Len(Fn) - 3) & "docx"
+      
+       Set webdoc = Documents.Open(FileName:=Fp & Fn, Visible:=1)
+ 
+       Documents.Open FileName:=Fp & Fn, _
+       ConfirmConversions:=False, _
+       ReadOnly:=False, _
+       AddToRecentFiles:=False, _
+       PasswordDocument:="", _
+       PasswordTemplate:="", _
+       Revert:=False, _
+       WritePasswordDocument:="", _
+       WritePasswordTemplate:="", _
+       Format:=wdOpenFormatAuto, _
+       XMLTransform:=""
+      
+       ActiveDocument.SaveAs2 FileName:=Fp & Fm, _
+       FileFormat:=wdFormatXMLDocument, _
+       LockComments:=False, _
+       Password:="", _
+       AddToRecentFiles:=True, _
+       WritePassword:="", _
+       ReadOnlyRecommended:=False, _
+       EmbedTrueTypeFonts:=False, _
+       SaveNativePictureFormat:=False, _
+       SaveFormsData:=False, _
+       SaveAsAOCELetter:=False, _
+       CompatibilityMode:=15
+      
+       ActiveWindow.Close
+      
+       Mf.Movefile Fp & Fn, Fp & "原始文件\" & Fn
+       Mf.Movefile Fp & Fm, Fp & "已转换\" & Fm
+       
+       Fn = Dir
+   
+    Loop
+   
+    Application.DisplayAlerts = True
+   
+    Application.Quit
+ 
+End Sub
